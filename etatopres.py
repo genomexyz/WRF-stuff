@@ -7,7 +7,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 #setting
-findpres = 85000
+findpres = 70000 #in Pa
 
 #file
 wrfoutfile = 'wrfout_d01_2017-06-01_00:00:00'
@@ -66,6 +66,6 @@ cs = m.pcolormesh(lon, lat, np.squeeze(paramfind), cmap='Set3', latlon=True)
 m.drawcoastlines(linewidth=0.75)
 m.drawcountries(linewidth=0.75)
 
-plt.title('mixing ratio at 850 mb')
+plt.title('mixing ratio at 700 mb')
 cbar = m.colorbar(cs, location='bottom', pad="10%") #add color bar
 plt.show()
