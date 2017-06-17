@@ -21,52 +21,46 @@ dsetwrf = Dataset(wrfoutfile, mode = 'r')
 
 lat = dsetwrf.variables['XLAT'][0]
 lon = dsetwrf.variables['XLONG'][0]
-stagz = dsetwrf.variables['ZNW'][0]
+stagz = dsetwrf.variables['ZNU'][0]
 
-
+pres = dsetwrf.variables['P'][0]
+presbase = dsetwrf.variables['PB'][0]
 ptop = dsetwrf.variables['P_TOP'][0]
-psfc = dsetwrf.variables['PSFC'][0]
-wcomp = dsetwrf.variables['W'][0]
-#potentemp = dsetwrf.variables['T'][0]
-#basetemp = dsetwrf.variables['T00'][0]
 
-#print psfc
-#print
-print stagz
-print
+mixrat = dsetwrf.variables['QVAPOR'][0]
 
-#####################
-#calculating session#
-#####################
+print np.shape(presbase)
+print np.shape(pres)
 
-#
-#poten temp = perturb poten temp + base state temp
-#
+realpres = pres + presbase
 
-Y, X = np.shape(psfc)
-
-etatoprs = np.zeros((len(stagz), Y, X))
-
+#surface = ptop + (pres + presbase - ptop) / stagz
 
 #convert eta to pressure
-for i in xrange(Y):
-	for j in xrange(X):
-		etatoprs[:,i,j] = stagz * (psfc[i,j] - ptop) + ptop
+#Z, Y, X = np.shape(pres)
+#etatoprs = np.zeros((Z, Y, X))
+#for i in xrange(Y):
+#	for j in xrange(X):
+#		etatoprs[:,i,j] = ptop + (pres[:,i,j] + presbase[:,i,j] - ptop) / stagz
 
-#print etatoprs
+#print etatoprs[:,0,0]
 
+print realpres
+print mixrat
 
+Y, X = np.shape(realpres[0])
 paramfind = np.zeros((Y, X))
 for i in xrange(Y):
 	for j in xrange(X):
 		#find 'in between' value of our findpres
 		for k in xrange(len(stagz)):
-			if (etatoprs[k,i,j] < findpres):
-				paramfind[i,j] = wcomp[k-1,i,j] - (etatoprs[k-1,i,j] - findpres) \
-				* ((wcomp[k-1,i,j] - wcomp[k,i,j]) / (etatoprs[k-1,i,j] - etatoprs[k,i,j]))
-				print wcomp[k,i,j], wcomp[k-1,i,j]
+			if (realpres[k,i,j] < findpres):
+				banding = (mixrat[k-1,i,j] - mixrat[k,i,j]) / (realpres[k-1,i,j] - realpres[k,i,j])
+				paramfind[i,j] = mixrat[k,i,j] + (findpres - realpres[k,i,j]) * banding
+				print k, k-1
 				break
 
+print paramfind
 
 ###############
 #plotting time#
@@ -81,6 +75,6 @@ cs = m.pcolormesh(lon, lat, np.squeeze(paramfind), cmap='Set3', latlon=True)
 m.drawcoastlines(linewidth=0.75)
 m.drawcountries(linewidth=0.75)
 
-plt.title('vertical velocity at 850 mb')
+plt.title('mixing ratio at 850 mb')
 cbar = m.colorbar(cs, location='bottom', pad="10%") #add color bar
 plt.show()
