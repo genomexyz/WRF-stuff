@@ -34,17 +34,6 @@ print np.shape(pres)
 
 realpres = pres + presbase
 
-#surface = ptop + (pres + presbase - ptop) / stagz
-
-#convert eta to pressure
-#Z, Y, X = np.shape(pres)
-#etatoprs = np.zeros((Z, Y, X))
-#for i in xrange(Y):
-#	for j in xrange(X):
-#		etatoprs[:,i,j] = ptop + (pres[:,i,j] + presbase[:,i,j] - ptop) / stagz
-
-#print etatoprs[:,0,0]
-
 print realpres
 print mixrat
 
