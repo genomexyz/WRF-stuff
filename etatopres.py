@@ -21,16 +21,18 @@ dsetwrf = Dataset(wrfoutfile, mode = 'r')
 
 lat = dsetwrf.variables['XLAT'][0]
 lon = dsetwrf.variables['XLONG'][0]
-stagz = dsetwrf.variables['ZNU'][0]
 
 pres = dsetwrf.variables['P'][0]
 presbase = dsetwrf.variables['PB'][0]
-ptop = dsetwrf.variables['P_TOP'][0]
-
 mixrat = dsetwrf.variables['QVAPOR'][0]
 
 print np.shape(presbase)
 print np.shape(pres)
+
+
+#####################
+#calculating session#
+#####################
 
 realpres = pres + presbase
 
@@ -42,7 +44,7 @@ paramfind = np.zeros((Y, X))
 for i in xrange(Y):
 	for j in xrange(X):
 		#find 'in between' value of our findpres
-		for k in xrange(len(stagz)):
+		for k in xrange(len(realpres)):
 			if (realpres[k,i,j] < findpres):
 				banding = (mixrat[k-1,i,j] - mixrat[k,i,j]) / (realpres[k-1,i,j] - realpres[k,i,j])
 				paramfind[i,j] = mixrat[k,i,j] + (findpres - realpres[k,i,j]) * banding
