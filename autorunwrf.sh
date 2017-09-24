@@ -281,7 +281,7 @@ EOF
 			time mpirun -np 4 ./wrf.exe
 #cleaning
 			rm -f met_em*
-			cd $WRFworkdir$WPS"palu"
+			cd $WRFworkdir$WPS$WPSdomain
 			rm -f met_em*
 		done
 	done
