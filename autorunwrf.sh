@@ -130,7 +130,7 @@ for ((i=$(($startmonth)); i<=$endmonth; i++)); do
 
 
 &domain_wizard
- grib_data_path = '/home/genomexyz/WRF/Build_WRF/DATA/skripsi',
+ grib_data_path = '/home/genomexyz/WRF/Build_WRF/DATA/XXX',
  grib_vtable = 'Vtable.GFS',
  dwiz_name    =palu
  dwiz_desc    =
@@ -270,7 +270,7 @@ EOF
 #RUNNING WPS
 			#time ./geogrid.exe
 			#ln -s $WRFworkdir$WPS"ungrib/Variable_Tables/Vtable.GFS" $WRFworkdir$WPS$WPSdomain"Vtable"
-			$WRFworkdir$WPS"link_grib.csh" "/home/genomexyz/WRF/Build_WRF/DATA/skripsi/gfs_4_"$tahun$bulan$hari$gfsdata
+			$WRFworkdir$WPS"link_grib.csh" "/home/genomexyz/WRF/Build_WRF/DATA/XXX/gfs_4_"$tahun$bulan$hari$gfsdata
 			time ./ungrib.exe
 			time ./metgrid.exe
 #RUNNING WRF
