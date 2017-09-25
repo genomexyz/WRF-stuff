@@ -10,7 +10,6 @@ startday=2
 endday=30
 starthour=0
 
-https://nomads.ncdc.noaa.gov/data/gfs4/201601/20160101/gfs_4_20160101_0000_000.grb2	
 
 for ((i=$(($startday)); i<=$endday; i++)); do
 	for ((j=0; j<2; j++)); do
