@@ -7,73 +7,110 @@ WRFworkdir="/home/genomexyz/WRF/Build_WRF/"
 WPS="WPS/"
 WPSdomain="palu/"
 WRFARWrun="WRFV3/run/"
+gfsdir=/mnt/Seagate/XXX/dataGFS/XXX
 #time adjustment
 timemode2="_12:00:00"
 timemode1="_00:00:00"
 tahun=2016
-startmonth=1
-startday=1
-endmonth=1
-endday=1
+month=1
+startday=9
+endday=9
 
 #running geogrid.exe
 
 #echo $WRFworkdir$WPS$WPSdomain
 
-for ((i=$(($startmonth)); i<=$endmonth; i++)); do
-	if (( $i == $endmonth )); then
-		let endday=$endday
-	else
-		let endday=30
-	fi
-	for ((j=$(($startday)); j<=$endday; j++)); do
-		for ((k=0; k<2; k++)); do
+if [ $# -lt 4 ]
+then
+	echo "usage: ./autorunwrf.sh year month startday endday istherenextmonth(end)"
+	echo "last argument is optional"
+	exit
+fi
+
+if (( $3 > $4 ))
+then
+	echo "usage: ./autorunwrf.sh year month startday endday istherenextmonth(end)"
+	echo "last argument is optional"
+	echo $2 $3
+	exit
+else
+	tahun=$1
+	month=$2
+	startday=$3
+	endday=$4
+fi
+
+if [[ $5 == "end" ]]
+then
+	endmonth="active"
+fi
+
+#if (( $i == $endday ))
+#then
+#	hari=01
+#	month=$(($month+1))
+#fi
+
+for ((j=$(($startday)); j<=$endday; j++)); do
+	for ((k=0; k<2; k++)); do
 #numbering purpose
-			if (( $i < 10 )); then
-				bulan=0$i
-			else
-				bulan=$i
-			fi
+		if (( $month < 10 )); then
+			bulan=0$month
+		else
+			bulan=$month
+		fi
+		if (( $j < 10 )); then
+			hari=0$j
+		else
+			hari=$j
+		fi
+
+		if (( $k == 0 )); then
+			gfsdata="_0000_"
+			bulan2=$bulan
+			hourinput=0
+			hourinputend=12
+			jam=$timemode1
+			jam2=$timemode2
 			if (( $j < 10 )); then
-				hari=0$j
+				hari2=0$j
 			else
-				hari=$j
+				hari2=$j
 			fi
-			if (( $k == 0 )); then
-				gfsdata="_0000_"
-				dayinput=$j
-				dayinputend=$j
-				hourinput=0
-				hourinputend=12
-				jam=$timemode1
-				jam2=$timemode2
-				if (( $j < 10 )); then
-					hari2=0$j
+		else
+			gfsdata="_1200_"
+			hourinput=12
+			hourinputend=0
+			jam=$timemode2
+			jam2=$timemode1
+			if ((  $(($j+1)) < 10 )); then
+				hari2=0$(($j+1))
+			else
+				hari2=$(($j+1))
+			fi
+			if (( $5 == "end" ))
+			then
+				if (( $(($j+1)) > endday ))
+				then
+					hari2=01
+					if (( $month < 9 )); then
+						bulan2=0$(($month+1))
+					else
+						bulan2=$(($month+1))
+					fi
 				else
-					hari2=$j
+					bulan2=$bulan
 				fi
 			else
-				gfsdata="_1200_"
-				dayinput=$j
-				dayinputend=$(($j+1))
-				hourinput=12
-				hourinputend=0
-				jam=$timemode2
-				jam2=$timemode1
-				if (( $j < 10 )); then
-					hari2=0$(($j+1))
-				else
-					hari2=$(($j+1))
-				fi
+				bulan2=$bulan
 			fi
-			echo $hari
-			echo bulan $bulan $jam $jam2 $hari2
-			cat > namelist.wps << EOF
+		fi
+		cat > namelist.wps << EOF
 &share
  wrf_core = 'ARW',
  max_dom = 3,
  start_date = '$tahun-$bulan-$hari$jam', '$tahun-$bulan-$hari$jam', '$tahun-$bulan-$hari$jam', 
- end_date   = '$tahun-$bulan-$hari2$jam2', '$tahun-$bulan-$hari2$jam2', '$tahun-$bulan-$hari2$jam2', 
+ end_date   = '$tahun-$bulan2-$hari2$jam2', '$tahun-$bulan2-$hari2$jam2', '$tahun-$bulan2-$hari2$jam2', 
  interval_seconds = 10800,
  io_form_geogrid = 2,
  opt_output_from_geogrid_path = '/home/genomexyz/WRF/Build_WRF/WPS/palu/',
@@ -130,7 +167,7 @@ for ((i=$(($startmonth)); i<=$endmonth; i++)); do
 
 
 &domain_wizard
- grib_data_path = '/home/genomexyz/WRF/Build_WRF/DATA/XXX',
+ grib_data_path = $gfsdir,
  grib_vtable = 'Vtable.GFS',
  dwiz_name    =palu
  dwiz_desc    =
@@ -159,20 +196,20 @@ run_minutes              = 0,
 run_seconds              = 0,
 start_year               = $tahun,     $tahun,     $tahun,
 start_month              = $bulan,       $bulan,       $bulan,
-start_day                = $dayinput,        $dayinput,        $dayinput,
+start_day                = $hari,        $hari,        $hari,
 start_hour               = $hourinput,       $hourinput,       $hourinput,
 start_minute             = 00,       00,       00,
 start_second             = 00,       00,       00,
 end_year                 = $tahun,     $tahun,     $tahun,
-end_month                = $bulan,       $bulan,       $bulan,
-end_day                  = $dayinputend,        $dayinputend,        $dayinputend,
+end_month                = $bulan2,       $bulan2,       $bulan2,
+end_day                  = $hari2,        $hari2,        $hari2,
 end_hour                 = $hourinputend,        $hourinputend,        $hourinputend,
 end_minute               = 00,        0,       00,
 end_second               = 00,       00,       00,
 interval_seconds         = 10800,
 input_from_file          = .true.,   .true.,   .true.,
 history_interval         = 180,       60,       60,
-frames_per_outfile       = 1,        1,        1,
+frames_per_outfile       = 1000,        1000,        1000,
 restart                  = .false.,
 restart_interval         = 5000,
 io_form_history          = 2,
@@ -268,21 +305,21 @@ nio_groups               = 1,
 
 EOF
 #RUNNING WPS
-			#time ./geogrid.exe
-			#ln -s $WRFworkdir$WPS"ungrib/Variable_Tables/Vtable.GFS" $WRFworkdir$WPS$WPSdomain"Vtable"
-			$WRFworkdir$WPS"link_grib.csh" "/home/genomexyz/WRF/Build_WRF/DATA/XXX/gfs_4_"$tahun$bulan$hari$gfsdata
-			time ./ungrib.exe
-			time ./metgrid.exe
+		#time ./geogrid.exe
+		#ln -s $WRFworkdir$WPS"ungrib/Variable_Tables/Vtable.GFS" $WRFworkdir$WPS$WPSdomain"Vtable"
+		$WRFworkdir$WPS"link_grib.csh" "$gfsdir/"gfs_4_$tahun$bulan$hari$gfsdata
+		time ./ungrib.exe
+		time ./metgrid.exe
 #RUNNING WRF
-			cd $WRFworkdir$WRFARWrun
-			ln -sf /home/genomexyz/WRF/Build_WRF/WPS/palu/namelist* .
-			ln -sf /home/genomexyz/WRF/Build_WRF/WPS/palu/met_em* .
-			time mpirun -np 4 ./real.exe
-			time mpirun -np 4 ./wrf.exe
+		cd $WRFworkdir$WRFARWrun
+		ln -sf /home/genomexyz/WRF/Build_WRF/WPS/palu/namelist* .
+		ln -sf /home/genomexyz/WRF/Build_WRF/WPS/palu/met_em* .
+		time mpirun -np 4 ./real.exe
+		time mpirun -np 4 ./wrf.exe
 #cleaning
-			rm -f met_em*
-			cd $WRFworkdir$WPS$WPSdomain
-			rm -f met_em*
-		done
+		rm -f met_em*
+		cd $WRFworkdir$WPS$WPSdomain
+		rm -f met_em*
+		rm -f FILE:*
 	done
 done
