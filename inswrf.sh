@@ -1,12 +1,10 @@
 #!/bin/bash
 
-username='anon'
-
 sudo apt update
 sudo apt install gcc g++ m4 csh openjdk-7-jre gfortran unzip
 
 #setting WRF2
-export DIR=/home/$username/WRF/Build_WRF/LIBRARIES
+export DIR=~/WRF/LIBRARIES
 export CC=gcc
 export CXX=g++
 export FC=gfortran
