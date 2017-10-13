@@ -3,7 +3,7 @@
 sudo apt update
 sudo apt install gcc g++ m4 csh openjdk-7-jre gfortran unzip
 
-#setting WRF2
+#setting WRF
 export DIR=~/WRF/LIBRARIES
 export CC=gcc
 export CXX=g++
@@ -90,3 +90,20 @@ tar xfvz WRFDA_V3.7.1.tar.gz
 cd WRFDA
 ./configure wrfda
 ./compile all_wrfvar
+
+#save all setting
+echo '#setting WRF' >> ~/.bashrc
+echo 'export DIR=~/WRF/LIBRARIES' >> ~/.bashrc
+echo 'export CC=gcc' >> ~/.bashrc
+echo 'export CXX=g++' >> ~/.bashrc
+echo 'export FC=gfortran' >> ~/.bashrc
+echo 'export FCFLAGS=-m64' >> ~/.bashrc
+echo 'export F77=gfortran' >> ~/.bashrc
+echo 'export FFLAGS=-m64' >> ~/.bashrc
+echo 'export PATH=$DIR/netcdf/bin:$PATH' >> ~/.bashrc
+echo 'export NETCDF=$DIR/netcdf' >> ~/.bashrc
+echo 'export PATH=$DIR/mpich/bin:$PATH' >> ~/.bashrc
+echo 'export LDFLAGS=-L$DIR/grib2/lib' >> ~/.bashrc
+echo 'export CPPFLAGS=-I$DIR/grib2/include' >> ~/.bashrc
+echo 'export JASPERLIB=$DIR/grib2/lib' >> ~/.bashrc
+echo 'export JASPERINC=$DIR/grib2/include' >> ~/.bashrc
