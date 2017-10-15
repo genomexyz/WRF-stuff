@@ -81,12 +81,13 @@ cd ..
 unzip WRFDomainWizard.zip -d WRFDomainWizard
 cd WRFDomainWizard
 sudo chmod 777 run_DomainWizard
+cd ..
 
 #extract geog
 tar xvjf geog_complete.tar.bz2
 
 #install WRFDA
-tar xfvz WRFDA_V3.8.tar.gz
+tar xfvz WRFDA_V3.8.1.tar.gz
 cd WRFDA
 ./configure wrfda
 ./compile all_wrfvar
