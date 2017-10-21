@@ -91,7 +91,7 @@ Y, X = np.shape(rainc[0])
 #	print np.sum(hujan[i])
 
 #print ((len(rainc)-1) / 6)
-for i in xrange (1):
+for i in xrange ((len(rainc)-1) / 6):
 	#if (i < 11):
 	#	continue
 	#matrix of classification
