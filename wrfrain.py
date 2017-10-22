@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 import numpy as np
-import pandas as pd
+#import pandas as pd
 from netCDF4 import Dataset
 from datetime import datetime
 from matplotlib import pyplot as plt
