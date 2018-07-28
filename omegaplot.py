@@ -15,6 +15,8 @@ import matplotlib.patches as mpatches
 wrfoutname = '/home/genomexyz/banding/wrfout_d03_2016-06-17_12_00_00'
 lattarget = -7.53
 lontarget = 109.4
+starttimestep = 12
+endtimestep = 31
 
 
 dsetwrf = Dataset(wrfoutname, mode = 'r')
@@ -23,7 +25,7 @@ dsetwrf = Dataset(wrfoutname, mode = 'r')
 latawal = dsetwrf.variables['XLAT'][0]
 lonawal = dsetwrf.variables['XLONG'][0]
 height = dsetwrf.variables['ZNU'][0]
-waktu = np.asarray(range(12,31))
+waktu = np.asarray(range(starttimestep,endtimestep))
 
 for i in xrange(len(latawal[:,0])):
 	if lattarget > latawal[i,0]:
@@ -50,19 +52,14 @@ else:
 	titikx = titikx1
 
 omegacnt = []
-for i in xrange(12,31):
+for i in xrange(starttimestep,endtimestep):
 	omegavar = getvar(dsetwrf, "omg", timeidx = i)
 	omegacnt.append(omegavar[:,titiky,titikx])
 	#omegacnt = np.append(omegacnt, 
 omegacnt = np.asarray(omegacnt)
 omegacnt = np.transpose(omegacnt)
 
-#
-omegacnt = np.flipud(omegacnt)
-height = np.flip(height, 0)
-
-print omegacnt
-print np.shape(omegacnt)
 plt.contourf(waktu, height, omegacnt, 100)
 plt.colorbar()
+plt.gca().invert_yaxis()
 plt.show()
