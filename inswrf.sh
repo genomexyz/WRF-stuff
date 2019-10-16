@@ -1,7 +1,7 @@
 #!/bin/bash
 
 sudo apt-get update
-sudo apt-get install gcc g++ m4 csh openjdk-7-jre gfortran unzip
+sudo apt-get install gcc g++ m4 csh openjdk-7-jre gfortran unzip make
 
 #setting WRF
 export DIR=~/WRF/LIBRARIES
